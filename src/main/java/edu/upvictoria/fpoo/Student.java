@@ -5,6 +5,7 @@ public class Student {
     private String enrollment;
     private Integer unitCount;
     private Integer[] grades;
+    private Float gpa;
 
     public Student(String enrollment, String name, Integer unitCount) {
         this.enrollment = enrollment;
@@ -29,6 +30,14 @@ public class Student {
             gpa += grade;
         }
         return gpa / this.unitCount;
+    }
+
+    public Float getGpa() {
+        return gpa;
+    }
+
+    public void setGpa() {
+        this.gpa = this.calculateGPA();
     }
 
     public String getName() {

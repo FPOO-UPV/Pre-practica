@@ -5,52 +5,48 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Group {
-    private HashMap<String, ArrayList<Subject>> groups;
-    private File dir_path;
+    private String UID_Group;
+    private ArrayList<Subject> subjects;
+    private File dir;
+    private String delim;
 
-    public Group(File path) {
-        this.dir_path = path;
-        this.groups = new HashMap<String, ArrayList<Subject>>();
+    public Group(File path, String delim) {
+        this.dir = path;
+        this.delim = delim;
+        this.UID_Group = this.dir.getName();
+        this.subjects = new ArrayList<Subject>();
     }
 
-    public Group(String path) {
-        this(new File(path));
+    public Group(String path, String delim) {
+        this(new File(path),delim);
     }
 
-    public void setSubjects(String delim) {
-        int n = this.dir_path.listFiles().length;
-        ArrayList<File[]> dirs = new ArrayList<>();
-        for (var dir : this.dir_path.listFiles()) {
-            dirs.add(dir.listFiles());
+    public void setSubjects() {
+        int i = 0;
+        for (var file : this.dir.listFiles()) {
+            this.subjects.add(new Subject(file.getAbsolutePath(),this.delim));
+            this.subjects.get(i).loadFile();
+            i++;
         }
-        for (int i = 0; i < dirs.size(); i++) {
-            var auxArr = new ArrayList<Subject>();
-            for (var file : dirs.get(i)) {
-                var auxSubject = new Subject();
-                if (isCSV(file)) {
-                    auxSubject.loadFile(file.getPath(),delim);
-                    auxArr.add(auxSubject);
-                }
-                this.groups.put(this.dir_path.listFiles()[i].getName(),auxArr);
-            }
-        }
-        System.out.println();
     }
 
-    public HashMap<String, ArrayList<Subject>> getGroups() {
-        return groups;
+    public String getUID_Group() {
+        return UID_Group;
     }
 
-    public boolean isCSV(File file) {
-        return file.getName().endsWith("csv");
+    public void setUID_Group(String UID_Group) {
+        this.UID_Group = UID_Group;
     }
 
-
-    public File getDir_path() {
-        return dir_path;
+    public ArrayList<Subject> getSubjects() {
+        return subjects;
     }
 
-    public void setDir_path(File dir_path) {
-        this.dir_path = dir_path;
+    public void setDir(File dir) {
+        this.dir = dir;
+    }
+
+    public File getDir() {
+        return dir;
     }
 }

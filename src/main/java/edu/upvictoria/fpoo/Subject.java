@@ -8,36 +8,42 @@ public class Subject {
     private String UID;
     private HashMap<String,Student> gradeList;
     private Integer unitCount;
+    private String path;
+    private String delim;
 
-    public Subject() {
+    public Subject(String path, String delim) {
         this.UID = "";
         this.unitCount = -2;
         this.gradeList = new HashMap<String,Student>();
+        this.path = path;
+        this.delim = delim;
     }
 
-    public void loadFile(String path, String delim) {
-        var file = new FileReaderWrapper(path);
+    public void loadFile() {
+        var file = new FileReaderWrapper(this.path);
         var file_content = file.getFile_content();
         this.UID = file.getFileName();
         for (var row : file_content) {
-            var columns = new StringTokenizer(row,delim);
-            var aux_content = new ArrayList<String>();
+            var columns = new StringTokenizer(row,this.delim);
+            var temp_content = new ArrayList<String>();
             while (columns.hasMoreTokens()) {
-                aux_content.add(columns.nextToken());
+                temp_content.add(columns.nextToken());
             }
-            var aux_student = new Student(aux_content.get(0), aux_content.get(1), 0);
-            var aux_grades = new ArrayList<Integer>();
-            for (int i = 2; i < aux_content.size(); i++) {
-                // aux_grades[i - 2] = Integer.parseInt(aux_content.get(i));
-                aux_grades.add(Integer.parseInt(aux_content.get(i)));
+            var student = new Student(temp_content.get(0),temp_content.get(1),0);
+            ArrayList<Integer> grades = new ArrayList<Integer>();
+            for (int i = 2; i < temp_content.size(); i++) {
+                grades.add(Integer.parseInt(temp_content.get(i)));
             }
-            var aux_aux_grades = new Integer[aux_grades.size()];
-            for (int i = 0; i < aux_grades.size(); i++ ) {
-                aux_aux_grades[i] = aux_grades.get(i);
-            } // me da flojera reescribir la clase Student
-            this.unitCount = aux_grades.size();
-            aux_student.setGrades(aux_aux_grades);
-            this.gradeList.put(aux_student.getEnrollment(), aux_student);
+            this.unitCount = grades.size();
+            student.setUnitCount(this.unitCount);
+            var aux_grades = new Integer[grades.size()];
+            for (int i = 0; i < grades.size(); i++) {
+                aux_grades[i] = grades.get(i);
+            }
+            student.setGrades(aux_grades);
+            student.setGpa();
+            this.gradeList.put(student.getEnrollment(),student);
+
         }
     }
 
